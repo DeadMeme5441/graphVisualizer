@@ -1,0 +1,64 @@
+1.  [50,000 feet overview]
+	-File Creation/File Uploading
+	-Dashboard with dynamic graphs and interchangable values containing Table, Regression Plot, Time Series Plot, Jointplot, Pairplot and Correlation plot.
+	-Benchmarking tool to clean data and generate most efficient models using ranking methods (Filter,Wrapper,Elimination)
+	-Results page with Regression Model Statistics(IPMVP), Predicted vs Observed Graph, Monthly Bias, Confidence Interval.
+	-Export Generated data in pdf or save to database.
+2.  [Blocks of the Project]
+	-Frontend UI for the user -> Frontend
+	-Backend API configured for ML calculations and serving frontend -> Backend
+	-Database + Storing -> Database
+3.  [Backend Server]
+	a. [Routes]
+		-Functionality
+			i. Accept File only if file has .csv extension
+			ii. 
+			iv. Create another array with 2nd and x column if user requires it and generate data graphs based on the array; x is new column selected
+			v. Calculate Ranked Regression Models based on filters selected
+		-API Routes 
+			i. /api/uploadfile (dashboard)
+			ii. /api/benchmark
+			iii. /api/results		
+	b. [Functions]
+		- Reading of csv data on upload
+		- Read by default 2nd and 3rd column and write onto 2 arrays
+		-Generation of Regression, Time Series, Joint, Pair, Correlation plot on dashboard based on array
+		-Generation of IPMVP, Predicted vs Observed, Monthly Bias, Confidence Interval on results based on benchmark data
+4.  [UI Components]
+	-Directory Routes
+		i. /Home
+		ii. /Login
+		iii. /CreateTable
+		iv. /Dashboard
+		v. /Benchmark
+		vi. /Results
+	-Functions
+		i. Upload File with .csv extension
+		ii. Displays dashboard with required data graphs
+		iii. Adds another dashboard with required data graphs when selecting new dataset from .csv file
+		iv. Bread Crumbs for site navigation
+		v. Selection of Ranking method, Number of Model Selection, Number of Variables to generate Ranked Regression Models
+		vi. Displays results dashboard with required data graphs
+		vii. Parsing of all data into pdf to be printed 
+		viii. Export all data into remote database
+
+	 	--------------------------------------------------------------------------------------------------
+V3.0
+Logic:
+
+Home Page:
+	Login: (requires IT to build, can delegate to IT)
+		-Linked to Enova portal
+		-uses LDAP authentication
+	File Upload:
+		-Uploads csv/excel files with values like y,CDD18,Footfall etc; Uploaded file will have datetime in 1st column, y in 2nd column, and rest
+		-datetime is not used for calculations, but is shown alongside values that are used in graph generation
+		-OnFileUpload,
+		csv {
+			y (2nd column) , cdd (3rd column) made into arrays and sent to backend
+		}
+
+Dashboard:
+	-Contains Table, Regression Plot, Time Series Plot, Jointplot, Pairplot and Correlation plot.
+	-Regression is dynamic i.e, Plots in graph can be deselected and regression re-generated from selected points
+	-(Possible?) 2 Types of Correlation plot is made, one with colours and other values (see xd link)

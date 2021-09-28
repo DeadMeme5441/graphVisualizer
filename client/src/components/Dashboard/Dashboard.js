@@ -30,10 +30,10 @@ const Dashboard = () => {
 
   const xSelectHandler = (e) => {
     if (!e.target) {
-      setCurrentX(jsonData.data.filter(obj => obj.colName === e))
+      setCurrentX(jsonData.data.filter(obj => obj.colName.trim() === e.trim()))
     }
     else {
-      setCurrentX(jsonData.data.filter(obj => obj.colName === e.target.value))
+      setCurrentX(jsonData.data.filter(obj => obj.colName.trim() === e.target.value.trim()))
       console.log(currentX)
     }
   }

@@ -1,19 +1,21 @@
 import React from 'react'
 
-import Dashboard from './Dashboard'
+import Graphboard from './Graphboard'
 
-const DashboardList = () => {
+const GraphboardList = ({ file_name }) => {
 
-  const [dash, setDash] = React.useState([<Dashboard />])
+  const [dash, setDash] = React.useState([<Graphboard file_name={file_name} />])
 
   const addHandler = () => {
-    setDash([...dash, <Dashboard />])
+    setDash([...dash, <Graphboard file_name={file_name} />])
   }
+
   const removeHandler = () => {
     let temp = [...dash]
     temp.pop()
     setDash(temp)
   }
+
   return (
     <div>
       {
@@ -31,4 +33,4 @@ const DashboardList = () => {
   )
 }
 
-export default DashboardList;
+export default GraphboardList;

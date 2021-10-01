@@ -1,5 +1,6 @@
 import React from 'react';
-import DashboardList from './components/Dashboard/DashboardList';
+
+import Dashboard from './components/Dashboard/Dashboard';
 import NavBar from './components/NavBar/NavBar'
 
 function App() {
@@ -8,7 +9,7 @@ function App() {
   return (
     <div className="container mx-auto flex flex-col">
       <NavBar />
-      <DashboardList />
+      <Dashboard />
     </div>
   );
 }

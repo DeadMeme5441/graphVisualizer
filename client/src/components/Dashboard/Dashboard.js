@@ -1,123 +1,119 @@
-import React from "react";
-import axios from "axios";
+import React from 'react';
+import axios from 'axios'
 
-import Graph from './Graph'
+import GraphboardList from './GraphboardList'
 
-const Dashboard = () => {
-  const [jsonData, setJsonData] = React.useState(null);
-  const [cols, setCols] = React.useState([])
-  const [currentX, setCurrentX] = React.useState(null)
-  const [currentY, setCurrentY] = React.useState(null)
-  const [type, setType] = React.useState(null)
+const FileNav = () => {
+
+  const [fileList, setFileList] = React.useState([])
+  const [tabList, setTabList] = React.useState([])
+  const [activeFile, setActiveFile] = React.useState(null)
+
 
   React.useEffect(() => {
-    axios
-      .get("http://localhost:5000/json/test")
-      .then(response => {
-        console.log(response.data)
-        setJsonData(response.data)
-        setCols(response.data.data.map(obj => {
-          return obj.colName
-        }))
-        setCurrentX(response.data.data.filter(obj => obj.colName === "CDD 18"))
-        setCurrentY(response.data.data.filter(obj => obj.colName === "Y"))
-        setType('regression')
-      })
-  }, []);
+    axios.get("http://localhost:5000/files").then((response) => {
+      setFileList(response.data.files)
+    })
+  }, [])
 
+  const activeFileHandler = (e) => {
+    setActiveFile(e.target.value)
+  }
 
-  if (!jsonData) return <div>No graph or columns loaded.</div>;
-
-  const xSelectHandler = (e) => {
-    if (!e.target) {
-      setCurrentX(jsonData.data.filter(obj => obj.colName.trim() === e.trim()))
+  const addFileHandler = (e) => {
+    let tab_list = [...tabList]
+    if (!tabList.includes(e.target.innerHTML)) {
+      tab_list.push(e.target.innerHTML)
+      setActiveFile(e.target.innerHTML)
     }
     else {
-      setCurrentX(jsonData.data.filter(obj => obj.colName.trim() === e.target.value.trim()))
-      console.log(currentX)
+      setActiveFile(e.target.innerHTML)
+    }
+    setTabList(tab_list)
+  }
+
+  const removeTabHandler = (e) => {
+    let tab_list = [...tabList]
+    tab_list.pop(e)
+    setTabList(tab_list)
+    if (tabList.length === 0) {
+      setActiveFile(null)
+    }
+    else {
+      setActiveFile(tab_list.at(-1))
     }
   }
 
-  const ySelectHandler = (e) => {
-    if (!e.target) {
-      setCurrentY(jsonData.data.filter(obj => obj.colName.trim() === e.trim()))
-    }
-    else {
-      setCurrentY(jsonData.data.filter(obj => obj.colName.trim() === e.target.value.trim()))
-    }
-  }
-
-  const typeHandler = (e) => {
-    if (e.target.value === "Regression") {
-      setType("regression")
-      xSelectHandler('CDD 18')
-      ySelectHandler('Y')
-    }
-    else if (e.target.value === "Time Series") {
-      setType("timeseries")
-      xSelectHandler('datetime')
-      ySelectHandler('CDD 18')
-    }
-    else if (e.target.value === "Joint Plot") {
-      setType("jointplot")
-      xSelectHandler('CDD 18')
-      ySelectHandler('Y')
-    }
+  if (!fileList && !activeFile) {
+    return (
+      <div className="container">
+        <nav className="flex flex-col sm:flex-row">
+          <p>
+            No files loaded.
+          </p>
+        </nav>
+      </div>
+    )
   }
 
   return (
-    <div className="flex flex-row justify-center space-x-10">
-      <div className="flex flex-col space-y-10 justify-center">
-        <div className="flex flex-col">
-          <h4 className="container pt-5 pb-5">Choose Type.</h4>
-          <div className="flex justify-center">
-            <select className="w-full border border-gray-300 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none" onChange={typeHandler}>
-              <option>Regression</option>
-              <option>Time Series</option>
-              <option>Joint Plot</option>
-            </select>
-          </div>
+    <div className="flex flex-row gap-4">
+      <div className="container max-w-max" >
+        <div className="border-black border-b-2 font-semibold py-4 px-6 text-center">
+          File Directory
         </div>
-        <div className="flex flex-row space-x-10">
-          {type !== "timeseries" ? <div className="block">
-            <h4 className="container pt-5 pb-5 justify-self-center">Choose X column.</h4>
-            <div className="container inline-flex">
-              <select className="border border-gray-300 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none" onChange={xSelectHandler}>
-                <option selected disabled hidden>CDD 18</option>
-                {
-                  cols.map(col => {
-                    return (
-                      col === "datetime" ?
-                        <></> : <option>{col}</option>
-                    )
-                  })
-                }
-              </select>
-            </div>
-          </div> : <> </>}
-          <div className="block">
-            <h4 className="container pt-5 pb-5">Choose Y column.</h4>
-            <div className="container inline-flex">
-              <select className="border border-gray-300 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none" onChange={ySelectHandler}>
-                <option selected disabled hidden>Y</option>
-                {
-                  cols.map(col => {
-                    return (
-                      col === "datetime" ?
-                        <></> : <option>{col}</option>
-                    )
-                  })
-                }
-              </select>
-            </div>
-          </div>
-        </div>
+        <nav className="flex flex-row">
+          {
+            fileList.map((file) => {
+              return (
+                <button className="text-gray-600 py-4 px-6 block hover:text-black focus:outline-none" onClick={addFileHandler}>{file}</button>
+              )
+            })
+          }
+        </nav>
       </div>
-      <div className="block mx-auto mt-5">
-        {type && currentX && currentY ? <Graph type={type} X={currentX[0]} Y={currentY[0]} /> : <></>}
+      <div className="container">
+        <nav className="flex flex-col sm:flex-row">
+          {
+            tabList.map((file) => {
+              return (
+                file !== activeFile ?
+                  <div className="flex flex-row hover:text-blue-500 focus:outline-none">
+                    <button className="text-gray-600 py-4 px-6 block" onClick={activeFileHandler}>{file}</button>
+                    <div className="flex items-center" onClick={() => removeTabHandler({ file })} >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 m-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </div>
+                  </div>
+                  :
+                  <div className="flex flex-row border-b-2 border-blue-500">
+                    <button className="text-gray-600 py-4 px-6 block hover:text-blue-500 focus:outline-none text-blue-500 font-medium "> {file}</button>
+                    <div className="flex items-center" onClick={() => removeTabHandler({ file })} >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 m-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </div>
+                  </div>
+              )
+            })
+          }
+        </nav>
+        <nav className="flex flex-col sm:flex-row">
+          {tabList.length === 0 ?
+            <button className="text-gray-600 py-4 px-6 block focus:outline-none font-medium text-center" onClick={activeFileHandler}>No Files Loaded.</button>
+            : <></>
+          }
+        </nav>
+        {activeFile ?
+          < GraphboardList file_name={activeFile} />
+          :
+          <div className="container text-center h-3/4">No file loaded.</div>
+        }
       </div>
     </div >
-  );
-};
+  )
 
-export default Dashboard;
+}
+
+export default FileNav

@@ -7,25 +7,22 @@ const Graphboard = ({ file_name }) => {
 
   const [jsonData, setJsonData] = React.useState(null);
   const [cols, setCols] = React.useState([])
-  const [currentX, setCurrentX] = React.useState(null)
-  const [currentY, setCurrentY] = React.useState(null)
+  const [currentX, setCurrentX] = React.useState([])
+  const [currentY, setCurrentY] = React.useState([])
   const [type, setType] = React.useState(null)
 
   React.useEffect(() => {
-    if (file_name) {
-      axios
-        .get("http://localhost:5000/json/" + file_name.split('.')[0])
-        .then(response => {
-          console.log(response.data)
-          setJsonData(response.data)
-          setCols(response.data.data.map(obj => {
-            return obj.colName
-          }))
-          setCurrentX(response.data.data.filter(obj => obj.colName === "CDD 18"))
-          setCurrentY(response.data.data.filter(obj => obj.colName === "Y"))
-          setType('regression')
-        })
-    }
+    axios
+      .get("http://localhost:5000/json/" + file_name.split('.')[0])
+      .then(response => {
+        setJsonData(response.data)
+        setCols(response.data.data.map(obj => {
+          return obj.colName
+        }))
+        setCurrentX(response.data.data[2])
+        setCurrentY(response.data.data[1])
+        setType('regression')
+      })
   }, [file_name]);
 
 
@@ -37,7 +34,6 @@ const Graphboard = ({ file_name }) => {
     }
     else {
       setCurrentX(jsonData.data.filter(obj => obj.colName.trim() === e.target.value.trim()))
-      console.log(currentX)
     }
   }
 
@@ -53,18 +49,18 @@ const Graphboard = ({ file_name }) => {
   const typeHandler = (e) => {
     if (e.target.value === "Regression") {
       setType("regression")
-      xSelectHandler('CDD 18')
-      ySelectHandler('Y')
+      xSelectHandler(jsonData.data[2].colName)
+      ySelectHandler(jsonData.data[1].colName)
     }
     else if (e.target.value === "Time Series") {
       setType("timeseries")
-      xSelectHandler('datetime')
-      ySelectHandler('CDD 18')
+      xSelectHandler(jsonData.data[0].colName)
+      ySelectHandler(jsonData.data[2].colName)
     }
     else if (e.target.value === "Joint Plot") {
       setType("jointplot")
-      xSelectHandler('CDD 18')
-      ySelectHandler('Y')
+      xSelectHandler(jsonData.data[2].colName)
+      ySelectHandler(jsonData.data[1].colName)
     }
   }
 
@@ -86,7 +82,7 @@ const Graphboard = ({ file_name }) => {
             <h4 className="container pt-5 pb-5 justify-self-center">Choose X column.</h4>
             <div className="container inline-flex">
               <select className="border border-gray-300 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none" onChange={xSelectHandler}>
-                <option selected disabled hidden>CDD 18</option>
+                <option selected disabled hidden>Select X.</option>
                 {
                   cols.map(col => {
                     return (
@@ -102,7 +98,7 @@ const Graphboard = ({ file_name }) => {
             <h4 className="container pt-5 pb-5">Choose Y column.</h4>
             <div className="container inline-flex">
               <select className="border border-gray-300 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none" onChange={ySelectHandler}>
-                <option selected disabled hidden>Y</option>
+                <option selected disabled hidden>Select Y.</option>
                 {
                   cols.map(col => {
                     return (
@@ -117,9 +113,9 @@ const Graphboard = ({ file_name }) => {
         </div>
       </div>
       <div className="block mx-auto mt-5">
-        {type && currentX && currentY ? <Graph type={type} X={currentX[0]} Y={currentY[0]} /> : <></>}
+        <Graph type={type} X={currentX[0]} Y={currentY[0]} />
       </div>
-    </div >
+    </div>
   );
 };
 

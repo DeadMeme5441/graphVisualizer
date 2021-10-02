@@ -4,10 +4,20 @@ import Graphboard from './Graphboard'
 
 const GraphboardList = ({ file_name }) => {
 
-  const [dash, setDash] = React.useState([<Graphboard file_name={file_name} />])
+  const [fileName, setFileName] = React.useState(null)
+  const [dash, setDash] = React.useState(null)
+
+  React.useEffect(() => {
+    if (file_name) {
+      setFileName(file_name)
+      setDash([<Graphboard file_name={file_name} />])
+    }
+  }, [file_name, fileName])
+
+  if (!dash) return <div>No File.</div>
 
   const addHandler = () => {
-    setDash([...dash, <Graphboard file_name={file_name} />])
+    setDash([...dash, <Graphboard file_name={fileName} />])
   }
 
   const removeHandler = () => {

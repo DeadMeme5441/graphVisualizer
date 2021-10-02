@@ -3,7 +3,7 @@ import axios from 'axios'
 
 import GraphboardList from './GraphboardList'
 
-const FileNav = () => {
+const Dashboard = () => {
 
   const [fileList, setFileList] = React.useState([])
   const [tabList, setTabList] = React.useState([])
@@ -17,7 +17,7 @@ const FileNav = () => {
   }, [])
 
   const activeFileHandler = (e) => {
-    setActiveFile(e.target.value)
+    setActiveFile(e.file)
   }
 
   const addFileHandler = (e) => {
@@ -34,9 +34,9 @@ const FileNav = () => {
 
   const removeTabHandler = (e) => {
     let tab_list = [...tabList]
-    tab_list.pop(e)
+    tab_list = tab_list.filter(tab => tab !== e.file)
     setTabList(tab_list)
-    if (tabList.length === 0) {
+    if (tab_list.length === 0) {
       setActiveFile(null)
     }
     else {
@@ -62,7 +62,7 @@ const FileNav = () => {
         <div className="border-black border-b-2 font-semibold py-4 px-6 text-center">
           File Directory
         </div>
-        <nav className="flex flex-row">
+        <nav className="flex flex-col">
           {
             fileList.map((file) => {
               return (
@@ -78,20 +78,20 @@ const FileNav = () => {
             tabList.map((file) => {
               return (
                 file !== activeFile ?
-                  <div className="flex flex-row hover:text-blue-500 focus:outline-none">
-                    <button className="text-gray-600 py-4 px-6 block" onClick={activeFileHandler}>{file}</button>
-                    <div className="flex items-center" onClick={() => removeTabHandler({ file })} >
+                  <div className="flex flex-row hover:text-black focus:outline-none" onClick={() => activeFileHandler({ file })}>
+                    <button className="text-gray-600 py-4 px-6 block" >{file}</button>
+                    <div className="flex items-center">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 m-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" onClick={() => removeTabHandler({ file })} />
                       </svg>
                     </div>
                   </div>
                   :
-                  <div className="flex flex-row border-b-2 border-blue-500">
-                    <button className="text-gray-600 py-4 px-6 block hover:text-blue-500 focus:outline-none text-blue-500 font-medium "> {file}</button>
-                    <div className="flex items-center" onClick={() => removeTabHandler({ file })} >
+                  <div className="flex flex-row border-b-2 border-blue-500" onClick={() => activeFileHandler({ file })}>
+                    <button className="text-gray-600 py-4 px-6 block hover:text-black focus:outline-none text-blue-500 font-medium " >{file}</button>
+                    <div className="flex items-center">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 m-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" onClick={() => removeTabHandler({ file })} />
                       </svg>
                     </div>
                   </div>
@@ -106,7 +106,7 @@ const FileNav = () => {
           }
         </nav>
         {activeFile ?
-          < GraphboardList file_name={activeFile} />
+          <GraphboardList file_name={activeFile} />
           :
           <div className="container text-center h-3/4">No file loaded.</div>
         }
@@ -116,4 +116,4 @@ const FileNav = () => {
 
 }
 
-export default FileNav
+export default Dashboard

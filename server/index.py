@@ -62,6 +62,7 @@ def get_regression_graph():
 
     req = request.json
 
+    print(req)
     xAxis = request.json["X"]  # type: ignore
     yAxis = request.json["Y"]  # type: ignore
 

@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios'
 
+import FileContext from '../FileContext'
 
 const Upload = () => {
+
+  const myContext = React.useContext(FileContext)
 
   const hiddenFileInput = React.useRef(null)
 
@@ -29,6 +32,7 @@ const Upload = () => {
       }).catch((e) => {
         console.log(e)
       })
+    myContext.setCurrentFile(selectedFile.name)
   };
 
   return (

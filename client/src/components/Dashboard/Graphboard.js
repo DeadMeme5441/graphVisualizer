@@ -12,6 +12,7 @@ const Graphboard = ({ file_name }) => {
   const [type, setType] = React.useState(null)
 
   React.useEffect(() => {
+    console.log(file_name)
     axios
       .get("http://localhost:5000/json/" + file_name.split('.')[0])
       .then(response => {
@@ -75,7 +76,7 @@ const Graphboard = ({ file_name }) => {
   }
 
   return (
-    <div className="flex flex-row justify-center space-x-10">
+    <div className="flex flex-row justify-around space-x-10">
       <div className="flex flex-col space-y-10 justify-center">
         <div className="flex flex-col">
           <h4 className="container pt-5 pb-5">Choose Type.</h4>

@@ -35,7 +35,7 @@ const GraphboardList = ({ file_name }) => {
           )
         })
       }
-      <div className="flex flex-row justify-center gap-6">
+      <div className="flex flex-row justify-center gap-6 mb-20">
         <button className="bg-black text-white font-bold py-2 px-4 rounded" onClick={addHandler}>Add Dash</button>
         <button className="bg-black text-white font-bold py-2 px-4 rounded" onClick={removeHandler}>Remove Dash</button>
       </div>

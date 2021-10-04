@@ -62,6 +62,16 @@ const Graphboard = ({ file_name }) => {
       xSelectHandler(jsonData.data[2].colName)
       ySelectHandler(jsonData.data[1].colName)
     }
+    else if (e.target.value === "Pair Plot") {
+      setType("pairplot")
+      xSelectHandler(jsonData.data[2].colName)
+      ySelectHandler(jsonData.data[1].colName)
+    }
+    else if (e.target.value === "Correlation Matrix") {
+      setType("correlation")
+      xSelectHandler(jsonData.data[2].colName)
+      ySelectHandler(jsonData.data[1].colName)
+    }
   }
 
   return (
@@ -74,46 +84,52 @@ const Graphboard = ({ file_name }) => {
               <option>Regression</option>
               <option>Time Series</option>
               <option>Joint Plot</option>
+              <option>Pair Plot</option>
+              <option>Correlation Matrix</option>
             </select>
           </div>
         </div>
-        <div className="flex flex-row space-x-10">
-          {type !== "timeseries" ? <div className="block">
-            <h4 className="container pt-5 pb-5 justify-self-center">Choose X column.</h4>
-            <div className="container inline-flex">
-              <select className="border border-gray-300 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none" onChange={xSelectHandler}>
-                <option selected disabled hidden>Select X.</option>
-                {
-                  cols.map(col => {
-                    return (
-                      col === "datetime" ?
-                        <></> : <option>{col}</option>
-                    )
-                  })
-                }
-              </select>
-            </div>
-          </div> : <> </>}
-          <div className="block">
-            <h4 className="container pt-5 pb-5">Choose Y column.</h4>
-            <div className="container inline-flex">
-              <select className="border border-gray-300 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none" onChange={ySelectHandler}>
-                <option selected disabled hidden>Select Y.</option>
-                {
-                  cols.map(col => {
-                    return (
-                      col === "datetime" ?
-                        <></> : <option>{col}</option>
-                    )
-                  })
-                }
-              </select>
+        {type !== "pairplot" && type !== "correlation" ?
+          <div className="flex flex-row space-x-10">
+            {type !== "timeseries" ? <div className="block">
+              <h4 className="container pt-5 pb-5 justify-self-center">Choose X column.</h4>
+              <div className="container inline-flex">
+                <select className="border border-gray-300 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none" onChange={xSelectHandler}>
+                  <option selected disabled hidden>Select X.</option>
+                  {
+                    cols.map(col => {
+                      return (
+                        col === "datetime" ?
+                          <></> : <option>{col}</option>
+                      )
+                    })
+                  }
+                </select>
+              </div>
+            </div> : <> </>}
+            <div className="block">
+              <h4 className="container pt-5 pb-5">Choose Y column.</h4>
+              <div className="container inline-flex">
+                <select className="border border-gray-300 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none" onChange={ySelectHandler}>
+                  <option selected disabled hidden>Select Y.</option>
+                  {
+                    cols.map(col => {
+                      return (
+                        col === "datetime" ?
+                          <></> : <option>{col}</option>
+                      )
+                    })
+                  }
+                </select>
+              </div>
             </div>
           </div>
-        </div>
+          :
+          <> </>
+        }
       </div>
-      <div className="block mx-auto mt-5">
-        <Graph type={type} X={currentX[0]} Y={currentY[0]} />
+      <div className="block mx-auto mt-5 mb-5 w-1/3">
+        <Graph type={type} X={currentX[0]} Y={currentY[0]} file_name={file_name} />
       </div>
     </div>
   );

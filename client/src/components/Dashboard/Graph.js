@@ -2,10 +2,11 @@ import React from 'react'
 import Plot from 'react-plotly.js'
 import axios from 'axios'
 
-const Graph = ({ type, X, Y }) => {
+const Graph = ({ type, X, Y, file_name }) => {
 
   const [data, setData] = React.useState(null);
   const [layout, setLayout] = React.useState(null);
+  const [pairURL, setPairURL] = React.useState(null)
 
   React.useEffect(() => {
     if (X && Y) {
@@ -14,7 +15,6 @@ const Graph = ({ type, X, Y }) => {
           X: X,
           Y: Y,
         }).then(response => {
-          console.log(response.data)
           setData(response.data.data)
           setLayout(response.data.layout)
         })
@@ -24,7 +24,6 @@ const Graph = ({ type, X, Y }) => {
           X: X,
           Y: Y,
         }).then(response => {
-          console.log(response.data)
           setData(response.data.data)
           setLayout(response.data.layout)
         })
@@ -34,18 +33,31 @@ const Graph = ({ type, X, Y }) => {
           X: X,
           Y: Y,
         }).then(response => {
-          console.log(response.data)
           setData(response.data.data)
           setLayout(response.data.layout)
         })
       }
+      else if (type === "correlation") {
+        axios.get(`http://localhost:5000/graph/correlation/${file_name}`)
+          .then(response => {
+            console.log(response.data)
+            setData(response.data.data)
+            setLayout(response.data.data)
+          }
+          )
+      }
     }
-  }, [type, X, Y])
+  }, [type, X, Y, file_name])
 
   return (
     <div className="container mx-auto">
-      <Plot data={data} layout={layout} />
+      {type !== "pairplot" ?
+        <Plot data={data} layout={layout} />
+        :
+        <img src={`http://localhost:5000/graph/pairplot/${file_name}`} alt="pairplot goes here"></img>
+      }
     </div>
+
   )
 }
 
